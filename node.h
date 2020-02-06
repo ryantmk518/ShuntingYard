@@ -14,10 +14,13 @@ class Node {
   void setValue(char*);
   Node* getRight();
   Node* getLeft();
+  Node* getNext();
+  void setNext(Node*);
   void setRight(Node*);
   void setLeft(Node*);
  private:
   Node* left;
   Node* right;
   char* value;
+  Node* next;
 }

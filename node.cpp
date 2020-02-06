@@ -30,3 +30,19 @@ Node* Node::getRight() {
 Node* Node::getLeft() {
   return left;
 }
+
+Node* Node::getNext(){
+  return next;
+}
+
+void Node::setNext(Node* newnext) {
+  next = newnext;
+}
+
+void Node::setLeft(Node* newleft) {
+  left = newleft;
+}
+
+void Node::setRight(Node* newright) {
+  right = newright;
+}
