@@ -23,4 +23,6 @@ class Node {
   Node* right;
   char* value;
   Node* next;
-}
+};
+
+#endif
