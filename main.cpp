@@ -8,7 +8,6 @@ Node* queueHead = NULL;
 void pop(Node* first);
 void enqueue(Node* first, char* value);
 void dequeue(Node* first);
-void print(Node* first);
 
 int main(){
   bool oper = false;
@@ -49,13 +48,32 @@ void push(Node* first, char* value){ //Push function to add to the linked list
   }
 }
 
+void enqueue(Node* first, char* value){ //Push function to add to the linked list
+  Node* current = first;
+  if (current == NULL){
+    cout << "Check" << endl;
+    current = new Node(NULL);
+    current -> setValue(value);
+  }
+  else if (current -> getNext() == NULL ) {
+    Node* newNode = new Node(value);
+    current -> setNext(newNode);
+    cout << current->getNext()->getValue();
+  }
+  else if (current -> getNext() != NULL) {
+    push(current-> getNext(), value);
+  }
+}
+
 void pop(Node* first) {
   if (first->getNext()->getNext() == NULL) {
     if (first->getNext() == NULL) {
+      cout << first -> getValue();
       first -> ~Node();
     }
     else {
       first ->setNext(NULL);
+      cout << first->getValue();
       first ->getNext()-> ~Node();
     }
   }
@@ -64,8 +82,10 @@ void pop(Node* first) {
   }
 }
 
-void print(Node* first) {
-  if (first->getNext()==NULL) {
-    // cout << first->getValue()<<endl;
-  }
+void dequeue(Node* first) {
+  Node* temp = new Node(NULL);
+  temp = first;
+  first = first -> getNext();
+  temp -> ~Node();
 }
+
