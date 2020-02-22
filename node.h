@@ -18,11 +18,11 @@ class Node {
   void setNext(Node*);
   void setRight(Node*);
   void setLeft(Node*);
- private:
+  private:
   Node* left;
   Node* right;
   char* value;
   Node* next;
-};
+ };
 
 #endif

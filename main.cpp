@@ -4,51 +4,61 @@
 #include "node.h"
 
 using namespace std;
-void push(Node* first, char* value);
-Node* queueHead = NULL;
-Node* stackHead = NULL;
-void pop(Node* first, vector<char*> output);
-void enqueue(Node* first, char* value);
+void enqueue(Node* &head, Node* h,  char* value);
 void dequeue(Node* first);
+Node* peek(Node* &head, Node* current);
+Node* pop(Node* &head, Node* current);
+void print(Node* first);
+void push(Node* &head, Node* h, char* value);
+int getPrio(char p);
+bool isEmpty(Node* head);
+bool asc(char a);
 
 int main(){
+  Node* queueHead = NULL;
+  Node* stackHead = NULL;
   cout << "Put spaces between the numbers, operators, and parantheses" << endl;
   char input[99];
-  int prio = 0;
-  vector<char*> output;
+  char array[99];
+  char array2[99];
   cout << "Enter input" << endl;
   cin.get(input, 99);
   int a = 0;
-  while (a < strlen(input)){
+  while (a < strlen(input)) {
     if (input[a] == '+' || input[a] == '-' || input[a] == '*' || input[a] == '/' || input[a] == '^'){
-      if (input[a] == '+') {
-        prio = 2;
-      } 
-      else if (input[a] == '-') {
-        prio = 2;
+      if (isEmpty(stackHead) == false) {
+        while((getPrio(*(peek(stackHead,stackHead)->getValue())) > getPrio(input[a]) || (getPrio(*(peek(stackHead,stackHead)->getValue())) == getPrio(input[a]) && asc(input[a]))) && *(peek(stackHead,stackHead)->getValue()) != '(' ) {
+          cout << "Adding" << endl;
+          enqueue(queueHead,queueHead,peek(stackHead,stackHead) -> getValue());
+          pop(stackHead,stackHead);
+          if(isEmpty(stackHead)) {
+            break;
+          }
+        }
+        char temp[2] = "";
+        temp[0]=input[a];
+        push(stackHead, stackHead, temp);
+        ++a;
       }
-      else if (input[a] == '*') {
-        prio = 3;
+      else {
+        char temp[2] = "";
+        temp[0]=input[a];
+        push(stackHead, stackHead, temp);
+        ++a;
       }
-      else if (input[a] == '/') {
-        prio = 3;
-      }
-      else if (input[a] == '^') {
-        prio = 4;
-      }
-
-      char temp[1] = "";
-      temp[0]=input[a];
-      push(stackHead, temp);
-      ++a;
     }
     else if (input[a] == '(') {
       char temp[2] = "(";
-      push(stackHead, temp);
+      push(stackHead, stackHead, temp);
     }
     else if (input[a] == ')') {
-      char temp[2] = ")";
-      push(stackHead, temp);
+      while (*(peek(stackHead, stackHead)->getValue())!= '(') {
+        enqueue(queueHead, queueHead, peek(stackHead, stackHead)->getValue());
+        pop(stackHead, stackHead);
+      }
+      if (*(peek(stackHead,stackHead) -> getValue()) == '(') {
+        pop(stackHead, stackHead);
+      }
     }
     else if (input[a] == ' '){
       ++a;
@@ -64,67 +74,93 @@ int main(){
       }
       a = a + c;
       temp[c] = '\n';
-      cout << temp << endl;
-      push(queueHead, temp);
+      enqueue(queueHead, queueHead, temp);
     }
+  }
+  while (stackHead != NULL) {
+    enqueue(queueHead, queueHead, peek(stackHead,stackHead)->getValue());
+    pop(stackHead,stackHead);
+  }
+  /*
+  while (queueHead != NULL) {
+    if (isdigit(*(queueHead)->getValue())) {
+      Node* temp = new Node(queueHead->getValue());
+
+    }
+  }
+  */
+}
+
+int getPrio(char p) {
+  if (p == '+' || p == '-') {
+    return 2;
+  }
+  else if (p == '*' || p == '/'){
+    return 3;
+  }
+
+  else if (p == '^'){
+    return 4;
   }
 }
 
-
-
-
-
-void push(Node* first, char* value){ //Push function to add to the linked list
-  Node* current = first;
-  if (current == NULL){
-    cout << value << endl;
-    current = new Node(NULL);
-    current -> setValue(value);
-  }
-  else if (current -> getNext() == NULL ) {
-    Node* newNode = new Node(value);
-    current -> setNext(newNode);
-    cout << current->getNext()->getValue();
-  }
-  else if (current -> getNext() != NULL) {
-    push(current-> getNext(), value);
-  }
-}
-
-void enqueue(Node* first, char* value){ //Push function to add to the linked list
-  Node* current = first;
-  if (current == NULL){
-    cout << "Check" << endl;
-    current = new Node(NULL);
-    current -> setValue(value);
-  }
-  else if (current -> getNext() == NULL ) {
-    Node* newNode = new Node(value);
-    current -> setNext(newNode);
-    cout << current->getNext()->getValue();
-  }
-  else if (current -> getNext() != NULL) {
-    push(current-> getNext(), value);
-  }
-}
-
-void pop(Node* first, vector<char*> output) {
-  if (first->getNext()->getNext() == NULL) {
-    if (first->getNext() == NULL) {
-      cout << first -> getValue();
-      output.push_back(first -> getValue());
-      first -> ~Node();
-    }
-    else {
-      first ->setNext(NULL);
-      cout << first->getValue();
-      first ->getNext()-> ~Node();
-    }
+bool asc(char a) {
+  if (a == '^') {
+    return false;
   }
   else {
-    pop(first->getNext(), output);
+    return true;
   }
 }
+
+Node* peek(Node* &head, Node* current) {
+  if(head == NULL) {
+    return NULL;
+  }
+  while(current->getNext() != NULL) {
+    current = current->getNext();
+  }
+  return current;
+}
+
+
+void enqueue(Node* &head, Node* h, char* value){ //Push function to add to the linked list
+  if (head == NULL) {
+    head = new Node(NULL);
+    head->setValue(value);
+    head->setNext(NULL);
+  }
+  else if (head->getNext() == NULL) {
+    Node* newNode = new Node(NULL);
+    newNode -> setValue(value);
+    h -> setNext(newNode);
+    newNode -> setNext(NULL);
+  }
+  else {
+    enqueue(head, h->getNext(), value);
+  }
+}
+
+Node* pop(Node* &head, Node* current) {
+  if(head == NULL) {
+    return NULL;
+  }
+  else if(current ->getNext() != NULL) {
+    while(current->getNext()->getNext() != NULL) {
+      current = current->getNext();
+    }
+    Node* temp = new Node(NULL);
+    temp = NULL;
+    current->setNext(temp);
+    return current;
+  }
+  else if(current->getNext() == NULL) {
+    head = NULL;
+    cout << "e" << endl;
+  }
+  return current;
+}
+
 
 void dequeue(Node* first) {
   Node* temp = new Node(NULL);
@@ -133,3 +169,37 @@ void dequeue(Node* first) {
   temp -> ~Node();
 }
 
+void print(Node* first) {
+  //cout << "Printing" << endl;
+  if (first != NULL) {
+    cout << first -> getValue() << endl;
+  }
+  if (first -> getNext() != NULL) {
+    print (first->getNext());
+  }
+}
+
+
+void push(Node* &head, Node* h,  char* value) {
+  if (head == NULL) {
+    head = new Node(NULL);
+    head->setValue(value);
+    head->setNext(NULL);
+  }
+  else if (head->getNext() == NULL) {
+    Node* newNode = new Node(NULL);
+    newNode -> setValue(value);
+    h -> setNext(newNode);
+    newNode -> setNext(NULL);
+  }
+  else {
+    push(head, h->getNext(), value);
+  }
+}
+
+bool isEmpty(Node* head) {
+  if(head == NULL) {
+    return true;
+  }
+  return false;
+}

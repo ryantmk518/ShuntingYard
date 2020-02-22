@@ -45,3 +45,4 @@ void Node::setLeft(Node* newleft) {
 void Node::setRight(Node* newright) {
   right = newright;
 }
+
