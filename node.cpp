@@ -11,7 +11,8 @@ Node::Node(char* newvalue) {
 }
 
 Node::~Node() {
-  delete &value;
+  //delete value;
+  value = NULL;
 }
 
 void Node::setValue(char* newvalue) {
