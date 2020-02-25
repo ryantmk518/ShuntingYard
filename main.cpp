@@ -30,14 +30,18 @@ int main(){
       cout << "Operator" << endl;
       if (stackHead != NULL) {
         cout << "Stack is not empty" << endl;
-        cout << stackHead->getValue() << endl;
+        cout << peek(stackHead)->getValue() << endl;
         while((getPrio(*(peek(stackHead)->getValue())) > getPrio(input[a]) || (getPrio(*(peek(stackHead)->getValue())) == getPrio(input[a]) && asc(input[a]))) && *(peek(stackHead)->getValue()) != '(' ) {
           cout << "Adding" << endl;
           enqueue(queueHead,queueHead,peek(stackHead) -> getValue());
           pop(stackHead,stackHead);
-          if(stackHead != NULL) {
+          if(&stackHead != NULL) {
             cout << "Stack is now empty" << endl;
             break;
+          }
+          else {
+            cout << "Stack not yet empty" << endl;
+            cout << peek(stackHead)->getValue() << endl;
           }
         }
         char temp[2] = {'\0','\0'};
@@ -83,7 +87,6 @@ int main(){
       int b = a;
       int c = 0;
       while (isalnum(input[b])) {
-        cout << input[a] << endl;
         temp[c] = input[b];
         ++b;
         ++c;
@@ -93,16 +96,15 @@ int main(){
     }
     cout << "Cycle done" << endl;
   }
-  cout << "Beginning output" << endl;
   while (stackHead != NULL) {
-    cout << stackHead -> getValue() << endl;
     cout << "Stack contains components" << endl;
-    cout << peek(stackHead) -> getValue();
+    //cout << peek(stackHead) -> getValue();
     enqueue(queueHead, queueHead, peek(stackHead)->getValue());
     cout << "Added to queue" << endl;
     pop(stackHead,stackHead);
     cout << "Stack is dumped" << endl;
   }
+  cout << "Postfix: " << endl;
   print(queueHead);
 
   /*
@@ -152,7 +154,7 @@ Node* peek(Node* head) {
     cout << "Not NULL" << endl;
     //cout << head->getNext() << endl;
     head = head->getNext();
-    cout<< "Current is now next" << endl;
+    cout << "Current is now next" << endl;
   }
   cout << "Ayayaya" << endl;
   return head;
@@ -197,9 +199,8 @@ Node* pop(Node* &head, Node* &current) {
     delete current;
     current = NULL;
     cout << "Setting head to NULL" << endl;
+    return NULL;
   }
-
-  return current;
 }
 
 
@@ -222,7 +223,7 @@ void print(Node* first) {
   if (first == NULL) {
     return;
   }
-  cout << first->getValue() << endl;
+  cout << first->getValue();
   if (first -> getNext() != NULL) {
     Node* n = first->getNext();
     print(n);
@@ -234,6 +235,7 @@ void push(Node* &head, char* value) {
   if (head == NULL) {
     head = new Node(NULL);
     head->setValue(value);
+    head->setNext(NULL);
   }
   else if(head->getNext() != NULL){
     Node* n = head->getNext();
@@ -241,6 +243,8 @@ void push(Node* &head, char* value) {
   }else{
     Node* newNode = new Node(NULL);
     newNode -> setValue(value);
+    newNode -> setNext(NULL);
+    head -> setNext(newNode);
   }
 }
 
