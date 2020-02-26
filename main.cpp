@@ -30,7 +30,7 @@ int main(){
   cout << "Enter input" << endl;
   cin.get(input, 99); //Get input
   int a = 0;
-  while (a < strlen(input)) {
+  while (a < strlen(input)) { //For each character in the input
 
 
     //All cout statements are essentially what the part of the code does
@@ -42,7 +42,7 @@ int main(){
       if (stackHead != NULL) {
         //cout << "Stack is not empty" << endl;
         //cout << peek(stackHead)->getValue() << endl;
-        while((getPrio(*(peek(stackHead)->getValue())) > getPrio(input[a]) || (getPrio(*(peek(stackHead)->getValue())) == getPrio(input[a]) && asc(input[a]))) && *(peek(stackHead)->getValue()) != '(' ) { //While operator at top of stack with higher prec, equal prec and is left asc, and is not left paren
+        while((getPrio(*(peek(stackHead)->getValue())) > getPrio(input[a]) || (getPrio(*(peek(stackHead)->getValue())) == getPrio(input[a]) && asc(input[a]))) && *(peek(stackHead)->getValue()) != '(' ) { //While operator at top of stack with higher prec, equal prec and is left asc, and is not left paren. Idea from Deyvik Bhan
           //cout << "Adding" << endl;
           enqueue(queueHead,queueHead,peek(stackHead) -> getValue());
           pop(stackHead,stackHead);
@@ -55,14 +55,14 @@ int main(){
             //cout << peek(stackHead)->getValue() << endl;
           }
         }
-        char* temp = new char[2]();
+        char* temp = new char[2](); //Push to operator stack
         temp[0]=input[a];
         push(stackHead, temp);
         ++a;
       }
       else {
         //cout << "Stack empty" << endl;
-        char* temp = new char[2]();
+        char* temp = new char[2](); //Push to operator stack
         temp[0]=input[a];
         //cout << temp << endl;
         push(stackHead, temp);
@@ -73,24 +73,24 @@ int main(){
     }
     else if (input[a] == '(') {
       //cout << "Left P" << endl;
-      char* par = new char[2]();
+      char* par = new char[2](); //Push to operator stack
       strcpy(par, (char*) "(");
       push(stackHead, par);
       ++a;
     }
     else if (input[a] == ')') {
       //cout << "Right P" << endl;
-      while (*(peek(stackHead)->getValue())!= '(') {
+      while (*(peek(stackHead)->getValue())!= '(') { //While the node is not the left parentheses
         //cout << peek(stackHead) -> getValue() << endl;
-        enqueue(queueHead, queueHead, peek(stackHead)->getValue());
-        pop(stackHead, stackHead);
+        enqueue(queueHead, queueHead, peek(stackHead)->getValue()); //Dump the stack to the queue
+        pop(stackHead, stackHead); //Remove the top of stack
       }
-      if (*(peek(stackHead) -> getValue()) == '(') {
+      if (*(peek(stackHead) -> getValue()) == '(') { //Once it reaches the left parentheses
         pop(stackHead, stackHead);
       }
       ++a;
     }
-    else if (input[a] == ' '){
+    else if (input[a] == ' '){ //Don't do anything with spaces
       //cout << "Space" << endl;
       ++a;
     }
@@ -99,36 +99,36 @@ int main(){
       char* temp = new char[9]();
       int b = a;
       int c = 0;
-      while (isalnum(input[b])) {
+      while (isalnum(input[b])) { //Search until the number is done
         temp[c] = input[b];
         ++b;
         ++c;
       }
       a = a + c;
-      enqueue(queueHead, queueHead, temp);
+      enqueue(queueHead, queueHead, temp); //Enqueue the number
     }
     //cout << "Cycle done" << endl;
   }
   while (stackHead != NULL) {
     //cout << "Stack contains components" << endl;
     //cout << peek(stackHead) -> getValue();
-    enqueue(queueHead, queueHead, peek(stackHead)->getValue());
+    enqueue(queueHead, queueHead, peek(stackHead)->getValue()); //Empty stack to the queue
     //cout << "Added to queue" << endl;
     pop(stackHead,stackHead);
     //cout << "Stack is dumped" << endl;
   }
   cout << "Postfix: " << endl;
-  print(queueHead);
+  print(queueHead); //Prints the postfix
 
 
 
 
-  while (queueHead != NULL) {
-    if (isalnum(*(queueHead)->getValue())) {
+  while (queueHead != NULL) { //For each node in the queue
+    if (isalnum(*(queueHead)->getValue())) { //If its a number, push it to the tree
       push(treeHead, queueHead->getValue());
       dequeue(queueHead, queueHead);
     }
-    else {
+    else { //If its an operator, set the right and left to the most recent two nodes
       Node* temp = new Node(queueHead->getValue());
       temp -> setRight(peek(treeHead));
       pop(treeHead, treeHead);
@@ -142,42 +142,42 @@ int main(){
   //Infix and prefix
   cout << "\n" << "Infix:" << endl;
   cout << "(" << input << ")" << endl;
-  cout << "Postfix:" << endl;
+  cout << "Prefix:" << endl;
   prefix(treeHead);
 }
 
-void infix(Node * treeHead) {
+void infix(Node * treeHead) { //
   if(treeHead != NULL) {
-    if(*(treeHead->getValue()) == '+' || *(treeHead->getValue()) == '-' || *(treeHead->getValue()) == '*' || *(treeHead->getValue()) == '/') {
+    if(*(treeHead->getValue()) == '+' || *(treeHead->getValue()) == '-' || *(treeHead->getValue()) == '*' || *(treeHead->getValue()) == '/') { //If there is an operator
       cout << "(";
     }
-    if(treeHead->getLeft() != NULL) {
+    if(treeHead->getLeft() != NULL) { //If the left exists, go to the left
       infix(treeHead->getLeft());
     }
     cout << treeHead->getValue();
-    if(treeHead->getRight() != NULL) {
+    if(treeHead->getRight() != NULL) { //If right exists, go right
       infix(treeHead->getRight());
     }
-    if(*(treeHead->getValue()) == '+' || *(treeHead->getValue()) == '-' || *(treeHead->getValue()) == '*' || *(treeHead->getValue()) == '/') {
+    if(*(treeHead->getValue()) == '+' || *(treeHead->getValue()) == '-' || *(treeHead->getValue()) == '*' || *(treeHead->getValue()) == '/') { //If operator
       cout << ")";
     }
   }
 }
 
 void prefix(Node* treeHead) {
-  if (treeHead != NULL){ 
-    cout << treeHead -> getValue() << " ";
-    if (treeHead -> getLeft() != NULL) {
+  if (treeHead != NULL){  //For each node
+    cout << treeHead -> getValue() << " "; //Print the value of the node
+    if (treeHead -> getLeft() != NULL) { //If left exists, go left
       prefix(treeHead -> getLeft()); 
     }
-    if (treeHead -> getRight() != NULL) {
+    if (treeHead -> getRight() != NULL) { //If right exists, go right
       prefix(treeHead -> getRight()); 
     }
   }
   cout << "\n" << endl;
 }
 
-int getPrio(char p) {
+int getPrio(char p) { //Check priority of the character
   if (p == '+' || p == '-') {
     return 2;
   }
@@ -190,7 +190,7 @@ int getPrio(char p) {
   }
 }
 
-bool asc(char a) {
+bool asc(char a) { //Check associativitiy
   if (a == '^') {
     return false;
   }
@@ -199,7 +199,7 @@ bool asc(char a) {
   }
 }
 
-Node* peek(Node* head) {
+Node* peek(Node* head) { //Returns top of stack
   if(head == NULL) {
     return NULL;
   }
@@ -233,7 +233,7 @@ void enqueue(Node* &head, Node* h, char* value){ //Add to the queue
   }
 }
 
-Node* pop(Node* &head, Node* &current) {
+Node* pop(Node* &head, Node* &current) { //Remove the top of stack
   //cout << "Removing head" << endl;
   if(head == NULL) {
     //cout << "Head is null, return null" << endl;
@@ -257,7 +257,7 @@ Node* pop(Node* &head, Node* &current) {
 }
 
 
-Node* dequeue(Node* &head, Node* current) {
+Node* dequeue(Node* &head, Node* current) { //Remove the last in the queue
   int count = 0;
   if(head == NULL) {
     return NULL;
@@ -272,7 +272,7 @@ Node* dequeue(Node* &head, Node* current) {
   }
 }
 
-void print(Node* first) {
+void print(Node* first) { //Prints through the list
   if (first == NULL) {
     return;
   }
@@ -284,7 +284,7 @@ void print(Node* first) {
 }
 
 
-void push(Node* &head, char* value) {
+void push(Node* &head, char* value) { //Push value to operator stack
   if (head == NULL) {
     head = new Node(NULL);
     head->setValue(value);
@@ -301,7 +301,7 @@ void push(Node* &head, char* value) {
   }
 }
 
-void pushSide(Node* &head, char* lvalue, char* rvalue) {
+void pushSide(Node* &head, char* lvalue, char* rvalue) { //Not needed
   if (head == NULL) {
     head = new Node(NULL);
     Node* right = new Node(rvalue);
@@ -321,7 +321,7 @@ void pushSide(Node* &head, char* lvalue, char* rvalue) {
   }
 }
 
-bool isEmpty(Node* head) {
+bool isEmpty(Node* head) { //checks if the list is empty
   if(head == NULL) {
     return true;
   }

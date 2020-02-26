@@ -6,6 +6,9 @@
 
 using namespace std;
 
+//Node Header. Initializes functions and contains values
+
+
 class Node {
  public:
   Node(char*);
