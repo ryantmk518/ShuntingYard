@@ -5,6 +5,7 @@
 using namespace std;
 
 Node::Node(char* newvalue) {
+  //strcpy(value, newvalue);
   value = newvalue;
   right = NULL;
   left = NULL;
